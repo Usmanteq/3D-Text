@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import GUI from "lil-gui";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 
@@ -8,7 +7,7 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
  * Base
  */
 // Debug
-const gui = new GUI();
+// const gui = new GUI();
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -21,13 +20,12 @@ const scene = new THREE.Scene();
  */
 const textureLoader = new THREE.TextureLoader();
 const matcapTexture = textureLoader.load("/textures/matcaps/1.png");
-console.log(matcapTexture);
 
 //Fonts
 const fontLoader = new FontLoader();
 
 fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
-  const textGeometry = new TextGeometry("Hello Three.js", {
+  const textGeometry = new TextGeometry("After School Club", {
     font: font,
     size: 0.5,
     height: 0.2,
@@ -39,25 +37,21 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
     bevelSegments: 4,
   });
   textGeometry.computeBoundingBox();
-  //We use the compute bounding box to get the exact coordinates
-  //   textGeometry.translate(
-  //     //after getting the exact coordinates on the x,y and z axis then we use bundingbox to reduce the values on all axis by half
-  //due to the bevelsize(x and y axis) and bevel thickness(zaxis) value our text is still not properly centered, so we have to minus the value of the bevelsize and bevelthickness
-  //     -(textGeometry.boundingBox.max.x - 0.02) * 0.5,
-  //     -(textGeometry.boundingBox.max.y - 0.02) * 0.5,
-  //     -(textGeometry.boundingBox.max.z - 0.03) * 0.5
-  //   );
+
   textGeometry.center();
   const material = new THREE.MeshMatcapMaterial();
   material.matcap = matcapTexture;
   const text = new THREE.Mesh(textGeometry, material);
   scene.add(text);
 
-  const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 20, 45);
-  //   const donutMaterial = new THREE.MeshMatcapMaterial();
-  //   donutMaterial.matcap = matcapTexture;
+  //Donut Geometry
+  const donutGeometry = new THREE.TorusGeometry(0.3, 0.2, 10, 35);
+  const donutMaterial = new THREE.MeshMatcapMaterial();
+  donutMaterial.matcap = matcapTexture;
+  //Box Geometry
+  const boxGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 50; i++) {
     const donut = new THREE.Mesh(donutGeometry, material);
 
     donut.position.x = (Math.random() - 0.5) * 10;
@@ -71,6 +65,21 @@ fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
     donut.scale.set(scale, scale, scale);
 
     scene.add(donut);
+  }
+  for (let i = 0; i < 50; i++) {
+    const box = new THREE.Mesh(boxGeometry, material);
+
+    box.position.x = (Math.random() - 0.5) * 10;
+    box.position.y = (Math.random() - 0.5) * 10;
+    box.position.z = (Math.random() - 0.5) * 10;
+
+    box.rotation.x = Math.random() * Math.PI;
+    box.rotation.y = Math.random() * Math.PI;
+
+    const scale = Math.random();
+    box.scale.set(scale, scale, scale);
+
+    scene.add(box);
   }
 });
 
@@ -108,7 +117,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.x = 1;
 camera.position.y = 1;
-camera.position.z = 2;
+camera.position.z = 3;
 scene.add(camera);
 
 // Controls
